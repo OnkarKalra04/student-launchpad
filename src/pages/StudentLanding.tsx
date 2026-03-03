@@ -1,94 +1,104 @@
 import { motion } from "framer-motion";
-import { GraduationCap, ArrowRight, ShieldCheck, Ticket, TrendingUp } from "lucide-react";
+import { GraduationCap, ArrowRight, ShieldCheck, Ticket, TrendingUp, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import MobileLayout from "@/components/MobileLayout";
 
 const features = [
-  { icon: ShieldCheck, title: "Verified Students Only", desc: "University email + ID verification ensures genuine eligibility." },
-  { icon: Ticket, title: "Exclusive Coupons", desc: "Auto-applied discounts on every order. No codes to remember." },
-  { icon: TrendingUp, title: "Save More, Order More", desc: "Flat discounts on your favorite meals, every single day." },
+  { icon: ShieldCheck, title: "Verified Only", desc: "University email + ID verification ensures genuine eligibility." },
+  { icon: Ticket, title: "Exclusive Coupons", desc: "Auto-applied discounts on every order. No codes needed." },
+  { icon: TrendingUp, title: "Save Daily", desc: "Flat discounts on your favorite meals, every single day." },
 ];
 
 export default function StudentLanding() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-hero text-primary-foreground">
+    <MobileLayout>
+      {/* Hero Card */}
+      <div className="bg-gradient-hero text-primary-foreground px-5 pt-10 pb-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-primary-foreground blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-primary-foreground blur-3xl" />
+          <div className="absolute top-5 left-5 w-48 h-48 rounded-full bg-primary-foreground blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-primary-foreground blur-3xl" />
         </div>
-        <div className="container relative z-10 py-20 md:py-32">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/15 px-4 py-1.5 text-sm font-medium backdrop-blur-sm mb-6">
-              <GraduationCap className="w-4 h-4" />
-              Student Program — Limited Pilot
-            </div>
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-              Your campus.<br />Your cravings.<br />Your discounts.
-            </h1>
-            <p className="text-lg md:text-xl opacity-90 mb-8 max-w-lg">
-              Verify your student ID and unlock exclusive daily discounts on Zomato. Currently available in Dwarka, Delhi.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button onClick={() => navigate("/apply")} size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-bold text-base px-8 shadow-lg">
-                Apply Now <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button onClick={() => navigate("/admin")} size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold">
-                Admin Dashboard
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative z-10">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-xs font-semibold backdrop-blur-sm mb-5">
+            <Sparkles className="w-3.5 h-3.5" />
+            Student Program — Limited Pilot
+          </div>
+          <h1 className="text-3xl font-extrabold leading-tight mb-3">
+            Your campus.<br />Your cravings.<br />Your discounts.
+          </h1>
+          <p className="text-sm opacity-85 mb-6 max-w-xs">
+            Verify your student ID and unlock exclusive daily discounts. Currently in Dwarka, Delhi.
+          </p>
+          <Button
+            onClick={() => navigate("/apply")}
+            size="lg"
+            className="w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 font-bold text-base shadow-lg h-12 rounded-xl"
+          >
+            Apply Now <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
+        </motion.div>
+      </div>
 
       {/* Features */}
-      <section className="container py-20">
-        <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-3xl font-bold text-center mb-12">
-          How it works
-        </motion.h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} className="bg-card rounded-xl p-6 shadow-card border border-border">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <f.icon className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="text-lg font-bold mb-2">{f.title}</h3>
-              <p className="text-muted-foreground text-sm">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      <div className="px-5 py-6 space-y-3">
+        <h2 className="text-lg font-bold px-1">How it works</h2>
+        {features.map((f, i) => (
+          <motion.div
+            key={f.title}
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 + i * 0.08 }}
+            className="bg-card rounded-2xl p-4 shadow-card border border-border flex items-start gap-4"
+          >
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <f.icon className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold mb-0.5">{f.title}</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">{f.desc}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
-      {/* Stats */}
-      <section className="bg-secondary py-16">
-        <div className="container grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      {/* Stats Strip */}
+      <div className="mx-5 bg-secondary rounded-2xl p-5">
+        <div className="grid grid-cols-2 gap-4">
           {[
-            { label: "Pilot Location", value: "Dwarka, Delhi" },
-            { label: "Max Eligible", value: "1,000" },
+            { label: "Location", value: "Dwarka" },
+            { label: "Max Students", value: "1,000" },
             { label: "Discount", value: "Up to 15%" },
             { label: "Status", value: "🟢 Active" },
           ].map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} viewport={{ once: true }}>
-              <p className="text-2xl md:text-3xl font-extrabold text-foreground">{s.value}</p>
-              <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
+              className="text-center"
+            >
+              <p className="text-lg font-extrabold">{s.value}</p>
+              <p className="text-[11px] text-muted-foreground">{s.label}</p>
             </motion.div>
           ))}
         </div>
-      </section>
+      </div>
 
       {/* CTA */}
-      <section className="container py-20 text-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h2 className="text-3xl font-bold mb-4">Ready to save on every order?</h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">Join the Student Program now. Limited spots available in the pilot.</p>
-          <Button onClick={() => navigate("/apply")} size="lg" className="bg-gradient-primary text-primary-foreground font-bold px-10 shadow-primary">
-            Get Started <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
-        </motion.div>
-      </section>
-    </div>
+      <div className="px-5 py-8 text-center">
+        <GraduationCap className="w-10 h-10 text-primary mx-auto mb-3" />
+        <h2 className="text-lg font-bold mb-1">Ready to save?</h2>
+        <p className="text-muted-foreground text-xs mb-5">Limited spots in the pilot.</p>
+        <Button
+          onClick={() => navigate("/apply")}
+          className="w-full bg-gradient-primary text-primary-foreground font-bold h-12 rounded-xl shadow-primary"
+        >
+          Get Started <ArrowRight className="ml-2 w-5 h-5" />
+        </Button>
+      </div>
+    </MobileLayout>
   );
 }
