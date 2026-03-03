@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Ticket, Clock, ArrowLeft, CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import { GraduationCap, Ticket, Clock, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@/lib/store";
@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
+import MobileLayout from "@/components/MobileLayout";
+import MobileHeader from "@/components/MobileHeader";
+import { Badge } from "@/components/ui/badge";
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
@@ -16,7 +19,6 @@ export default function StudentDashboard() {
   const { toast } = useToast();
   const [showFeedback, setShowFeedback] = useState(false);
 
-  // Find student by email or show latest
   const student = currentStudentEmail
     ? students.find(s => s.email === currentStudentEmail)
     : students.find(s => s.status === "verified");
@@ -33,14 +35,16 @@ export default function StudentDashboard() {
 
   if (!student) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="text-center">
-          <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">No Student Profile Found</h2>
-          <p className="text-muted-foreground mb-4">Apply to the Student Program to get started.</p>
-          <Button onClick={() => navigate("/apply")} className="bg-gradient-primary text-primary-foreground">Apply Now</Button>
+      <MobileLayout>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="text-center">
+            <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h2 className="text-lg font-bold mb-2">No Profile Found</h2>
+            <p className="text-muted-foreground text-sm mb-4">Apply to get started.</p>
+            <Button onClick={() => navigate("/apply")} className="bg-gradient-primary text-primary-foreground rounded-xl">Apply Now</Button>
+          </div>
         </div>
-      </div>
+      </MobileLayout>
     );
   }
 
@@ -55,80 +59,65 @@ export default function StudentDashboard() {
   const handleFeedback = () => {
     submitFeedback(student.id, feedback);
     setShowFeedback(false);
-    toast({ title: "Thank you!", description: "Your feedback helps us improve the program." });
+    toast({ title: "Thank you!", description: "Your feedback helps us improve." });
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-gradient-hero text-primary-foreground py-8">
-        <div className="container">
-          <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 mb-4">
-            <ArrowLeft className="mr-2 w-4 h-4" /> Back
-          </Button>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">{student.fullName}</h1>
-              <p className="text-sm opacity-80">{student.college} · {student.email}</p>
-            </div>
-            <div className="flex items-center gap-2 bg-primary-foreground/15 rounded-full px-3 py-1.5 backdrop-blur-sm">
-              <GraduationCap className="w-4 h-4" />
-              <span className="text-sm font-medium">Student</span>
-            </div>
-          </div>
+    <MobileLayout>
+      {/* Profile Header */}
+      <div className="bg-gradient-hero text-primary-foreground px-5 pt-6 pb-5">
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="text-lg font-bold">{student.fullName}</h1>
+          <Badge variant="secondary" className="bg-primary-foreground/15 text-primary-foreground text-[10px] border-0">
+            <GraduationCap className="w-3 h-3 mr-1" /> Student
+          </Badge>
         </div>
+        <p className="text-xs opacity-80">{student.college} · {student.email}</p>
       </div>
 
-      <div className="container max-w-2xl py-8 space-y-6">
-        {/* Status */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`${sc.bg} rounded-xl p-5 flex items-center gap-4`}>
-          <sc.icon className={`w-8 h-8 ${sc.color} ${sc.animate ? "animate-spin" : ""}`} />
+      <div className="px-5 py-5 space-y-4">
+        {/* Status Card */}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`${sc.bg} rounded-2xl p-4 flex items-center gap-3`}>
+          <sc.icon className={`w-7 h-7 ${sc.color} ${sc.animate ? "animate-spin" : ""}`} />
           <div>
-            <p className={`font-bold ${sc.color}`}>{sc.label}</p>
-            <p className="text-sm text-muted-foreground">Applied on {new Date(student.appliedAt).toLocaleDateString()}</p>
+            <p className={`font-bold text-sm ${sc.color}`}>{sc.label}</p>
+            <p className="text-[11px] text-muted-foreground">Applied {new Date(student.appliedAt).toLocaleDateString()}</p>
           </div>
         </motion.div>
 
         {/* Coupon Card */}
         {student.status === "verified" && student.couponCode && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-gradient-primary text-primary-foreground rounded-xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-foreground/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="flex items-start justify-between relative z-10">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Ticket className="w-5 h-5" />
-                  <span className="text-sm font-medium opacity-80">Your Student Coupon</span>
-                </div>
-                <p className="text-3xl font-extrabold tracking-wider mb-1">{student.couponCode}</p>
-                <p className="text-sm opacity-80">{pilot.discountPercent}% off · Auto-applied at checkout</p>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="bg-gradient-primary text-primary-foreground rounded-2xl p-5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-28 h-28 bg-primary-foreground/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative z-10">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Ticket className="w-4 h-4" />
+                <span className="text-[11px] font-medium opacity-80">Your Student Coupon</span>
               </div>
-              <div className="text-right">
-                <div className="flex items-center gap-1 text-sm opacity-80">
-                  <Clock className="w-4 h-4" />
-                  <span>Valid {pilot.couponValidityHours}h</span>
-                </div>
+              <p className="text-2xl font-extrabold tracking-wider mb-0.5">{student.couponCode}</p>
+              <p className="text-xs opacity-80">{pilot.discountPercent}% off · Auto-applied at checkout</p>
+              <div className="mt-3 pt-3 border-t border-primary-foreground/20 flex items-center gap-3 text-[11px]">
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {pilot.couponValidityHours}h</span>
+                <span>·</span>
+                <span>{pilot.maxUsagePerDay}/day</span>
+                <span>·</span>
+                <span>Non-shareable</span>
               </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-primary-foreground/20 flex gap-4 text-sm">
-              <span>Max {pilot.maxUsagePerDay}/day</span>
-              <span>·</span>
-              <span>Max {pilot.maxUsagePerWeek}/week</span>
-              <span>·</span>
-              <span>Non-transferable</span>
             </div>
           </motion.div>
         )}
 
         {/* Stats */}
         {student.status === "verified" && (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {[
-              { label: "Orders Before", value: student.ordersBeforeProgram },
-              { label: "Orders During", value: student.ordersDuringProgram },
-              { label: "Avg Order ₹", value: `₹${student.avgOrderValue}` },
+              { label: "Before", value: student.ordersBeforeProgram },
+              { label: "During", value: student.ordersDuringProgram },
+              { label: "Avg ₹", value: `₹${student.avgOrderValue}` },
             ].map((s, i) => (
-              <motion.div key={s.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.05 }} className="bg-card rounded-xl p-4 text-center border border-border shadow-card">
-                <p className="text-2xl font-extrabold">{s.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+              <motion.div key={s.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.05 }} className="bg-card rounded-2xl p-3 text-center border border-border shadow-card">
+                <p className="text-xl font-extrabold">{s.value}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
               </motion.div>
             ))}
           </div>
@@ -136,49 +125,49 @@ export default function StudentDashboard() {
 
         {/* Feedback */}
         {student.status === "verified" && !student.feedback && !showFeedback && (
-          <Button onClick={() => setShowFeedback(true)} variant="outline" className="w-full">Share Your Feedback</Button>
+          <Button onClick={() => setShowFeedback(true)} variant="outline" className="w-full rounded-xl h-11">Share Feedback</Button>
         )}
 
         {showFeedback && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-xl p-6 border border-border space-y-5">
-            <h3 className="font-bold text-lg">Quick Feedback</h3>
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl p-5 border border-border space-y-4">
+            <h3 className="font-bold text-sm">Quick Feedback</h3>
             <div>
-              <Label>Was the discount valuable to you?</Label>
-              <RadioGroup value={feedback.discountValuable ? "yes" : "no"} onValueChange={v => setFeedback(f => ({ ...f, discountValuable: v === "yes" }))} className="flex gap-4 mt-2">
-                <div className="flex items-center gap-2"><RadioGroupItem value="yes" id="dv-y" /><Label htmlFor="dv-y">Yes</Label></div>
-                <div className="flex items-center gap-2"><RadioGroupItem value="no" id="dv-n" /><Label htmlFor="dv-n">No</Label></div>
+              <Label className="text-xs">Was the discount valuable?</Label>
+              <RadioGroup value={feedback.discountValuable ? "yes" : "no"} onValueChange={v => setFeedback(f => ({ ...f, discountValuable: v === "yes" }))} className="flex gap-4 mt-1.5">
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="yes" id="dv-y" /><Label htmlFor="dv-y" className="text-xs">Yes</Label></div>
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="no" id="dv-n" /><Label htmlFor="dv-n" className="text-xs">No</Label></div>
               </RadioGroup>
             </div>
             <div>
-              <Label>Would you continue using this?</Label>
-              <RadioGroup value={feedback.wouldContinue ? "yes" : "no"} onValueChange={v => setFeedback(f => ({ ...f, wouldContinue: v === "yes" }))} className="flex gap-4 mt-2">
-                <div className="flex items-center gap-2"><RadioGroupItem value="yes" id="wc-y" /><Label htmlFor="wc-y">Yes</Label></div>
-                <div className="flex items-center gap-2"><RadioGroupItem value="no" id="wc-n" /><Label htmlFor="wc-n">No</Label></div>
+              <Label className="text-xs">Would you continue using this?</Label>
+              <RadioGroup value={feedback.wouldContinue ? "yes" : "no"} onValueChange={v => setFeedback(f => ({ ...f, wouldContinue: v === "yes" }))} className="flex gap-4 mt-1.5">
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="yes" id="wc-y" /><Label htmlFor="wc-y" className="text-xs">Yes</Label></div>
+                <div className="flex items-center gap-1.5"><RadioGroupItem value="no" id="wc-n" /><Label htmlFor="wc-n" className="text-xs">No</Label></div>
               </RadioGroup>
             </div>
             <div>
-              <Label>Orders per month: {feedback.ordersPerMonth}</Label>
+              <Label className="text-xs">Orders/month: {feedback.ordersPerMonth}</Label>
               <Slider value={[feedback.ordersPerMonth]} onValueChange={([v]) => setFeedback(f => ({ ...f, ordersPerMonth: v }))} min={1} max={30} step={1} className="mt-2" />
             </div>
             <div>
-              <Label>Reasonable discount %: {feedback.reasonableDiscount}%</Label>
+              <Label className="text-xs">Reasonable discount: {feedback.reasonableDiscount}%</Label>
               <Slider value={[feedback.reasonableDiscount]} onValueChange={([v]) => setFeedback(f => ({ ...f, reasonableDiscount: v }))} min={5} max={30} step={5} className="mt-2" />
             </div>
             <div>
-              <Label htmlFor="comments">Any comments?</Label>
-              <Textarea id="comments" value={feedback.comments} onChange={e => setFeedback(f => ({ ...f, comments: e.target.value }))} placeholder="Optional feedback..." className="mt-1" />
+              <Label htmlFor="comments" className="text-xs">Comments (optional)</Label>
+              <Textarea id="comments" value={feedback.comments} onChange={e => setFeedback(f => ({ ...f, comments: e.target.value }))} placeholder="Your thoughts..." className="mt-1 rounded-xl text-sm" rows={3} />
             </div>
-            <Button onClick={handleFeedback} className="w-full bg-gradient-primary text-primary-foreground font-bold">Submit Feedback</Button>
+            <Button onClick={handleFeedback} className="w-full bg-gradient-primary text-primary-foreground font-bold h-11 rounded-xl">Submit Feedback</Button>
           </motion.div>
         )}
 
         {student.feedback && (
-          <div className="bg-success/5 rounded-xl p-4 flex items-center gap-3 border border-success/20">
+          <div className="bg-success/5 rounded-2xl p-4 flex items-center gap-3 border border-success/20">
             <CheckCircle2 className="w-5 h-5 text-success" />
-            <p className="text-sm text-muted-foreground">Thank you for your feedback!</p>
+            <p className="text-xs text-muted-foreground">Thank you for your feedback!</p>
           </div>
         )}
       </div>
-    </div>
+    </MobileLayout>
   );
 }
