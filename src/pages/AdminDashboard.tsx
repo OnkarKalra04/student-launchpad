@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
+import { useStudentApplications } from "@/hooks/use-student-applications";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
   const { students, pilots, abTests, riskAlerts, verifyStudent, rejectStudent, suspendStudent, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
+  const { data: supabaseStudents, isLoading: studentsLoading } = useStudentApplications();
   const { toast } = useToast();
   const metrics = getMetrics();
   const pilot = pilots[0];
@@ -84,39 +86,35 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-bold">Student Applications</h2>
                 <Button variant="outline" size="sm" className="rounded-lg"><Download className="w-4 h-4 mr-2" /> Export</Button>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                {students.map(s => (
-                  <motion.div key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl p-5 border border-border">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-bold text-sm">{s.fullName}</p>
-                        <p className="text-xs text-muted-foreground">{s.college}</p>
-                        <p className="text-xs text-muted-foreground">{s.email}</p>
+              {studentsLoading ? (
+                <p className="text-sm text-muted-foreground">Loading student applications...</p>
+              ) : !supabaseStudents?.length ? (
+                <p className="text-sm text-muted-foreground">No student applications found.</p>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {supabaseStudents.map(s => (
+                    <motion.div key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-card rounded-2xl p-5 border border-border">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="font-bold text-sm">{s.name}</p>
+                          <p className="text-xs text-muted-foreground">{s.college_name}</p>
+                          <p className="text-xs text-muted-foreground">{s.university_email}</p>
+                        </div>
+                        <Badge variant="secondary" className="text-[11px]">
+                          {s.status || "pending"}
+                        </Badge>
                       </div>
-                      <Badge variant={s.status === "verified" ? "default" : s.status === "pending" ? "secondary" : "destructive"} className="text-[11px]">
-                        {s.status}
-                      </Badge>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      {s.status === "pending" && (
-                        <>
-                          <Button size="sm" onClick={() => { verifyStudent(s.id); toast({ title: `${s.fullName} verified` }); }} className="h-8 text-xs rounded-lg bg-success hover:bg-success/90 text-success-foreground flex-1">
-                            <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Verify
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => { rejectStudent(s.id); toast({ title: `${s.fullName} rejected` }); }} className="h-8 text-xs rounded-lg flex-1">
-                            <XCircle className="w-3.5 h-3.5 mr-1" /> Reject
-                          </Button>
-                        </>
-                      )}
-                      {s.status === "verified" && (
-                        <Button size="sm" variant="outline" onClick={() => { suspendStudent(s.id); toast({ title: `${s.fullName} suspended` }); }} className="h-8 text-xs rounded-lg text-warning">
-                          <Pause className="w-3.5 h-3.5 mr-1" /> Suspend
-                        </Button>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-3 text-xs text-muted-foreground">
+                        <span>Student ID: {s.student_id}</span>
+                        <span>Enrollment: {s.enrollment_duration}</span>
+                        <span>Contact: {s.contact_number}</span>
+                        <span>Zomato: {s.zomato_mobile}</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-2">Applied: {new Date(s.created_at).toLocaleDateString()}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
