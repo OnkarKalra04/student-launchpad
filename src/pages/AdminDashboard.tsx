@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { useStudentApplications } from "@/hooks/use-student-applications";
+import { useStudentApplications, useUpdateStudentStatus } from "@/hooks/use-student-applications";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,9 @@ import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
-  const { students, pilots, abTests, riskAlerts, verifyStudent, rejectStudent, suspendStudent, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
+  const { students, pilots, abTests, riskAlerts, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
   const { data: supabaseStudents, isLoading: studentsLoading } = useStudentApplications();
+  const updateStatus = useUpdateStudentStatus();
   const { toast } = useToast();
   const metrics = getMetrics();
   const pilot = pilots[0];
@@ -111,6 +112,50 @@ export default function AdminDashboard() {
                         <span>Zomato: {s.zomato_mobile}</span>
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-2">Applied: {new Date(s.created_at).toLocaleDateString()}</p>
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "verified" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "verified" }, {
+                              onSuccess: () => toast({ title: "Student verified" }),
+                              onError: () => toast({ title: "Failed to verify", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <CheckCircle2 className="w-3 h-3 mr-1" /> Verify
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "rejected" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "rejected" }, {
+                              onSuccess: () => toast({ title: "Student rejected" }),
+                              onError: () => toast({ title: "Failed to reject", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <XCircle className="w-3 h-3 mr-1" /> Reject
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "suspended" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "suspended" }, {
+                              onSuccess: () => toast({ title: "Student suspended" }),
+                              onError: () => toast({ title: "Failed to suspend", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <Pause className="w-3 h-3 mr-1" /> Suspend
+                        </Button>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
