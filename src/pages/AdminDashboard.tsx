@@ -16,6 +16,7 @@ import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
   const { students, pilots, abTests, riskAlerts, verifyStudent, rejectStudent, suspendStudent, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
+  const { data: supabaseStudents, isLoading: studentsLoading } = useStudentApplications();
   const { toast } = useToast();
   const metrics = getMetrics();
   const pilot = pilots[0];
