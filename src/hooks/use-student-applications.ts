@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase, updateStudentStatus } from "@/lib/supabase";
 
 export interface StudentApplication {
   id: string;
@@ -20,12 +20,24 @@ export function useStudentApplications() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student_applications")
-        .select("id, name, college_name, university_email, student_id, enrollment_duration, contact_number, zomato_mobile, created_at, status")
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data as StudentApplication[];
     },
-    refetchInterval: 10000, // Auto-refresh every 10 seconds for new applications
+    refetchInterval: 10000,
+  });
+}
+
+export function useUpdateStudentStatus() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "verified" | "rejected" | "suspended" }) =>
+      updateStudentStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["student-applications"] });
+    },
   });
 }
