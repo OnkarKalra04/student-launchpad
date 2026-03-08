@@ -20,7 +20,7 @@ export function useStudentApplications() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("student_applications")
-        .select("id, name, college_name, university_email, student_id, enrollment_duration, contact_number, zomato_mobile, created_at")
+        .select("id, name, college_name, university_email, student_id, enrollment_duration, contact_number, zomato_mobile, created_at, status")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
