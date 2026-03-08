@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      student_applications: {
+        Row: {
+          college_name: string
+          contact_number: string
+          created_at: string
+          enrollment_duration: string
+          id: string
+          name: string
+          status: string | null
+          student_id: string
+          university_email: string
+          zomato_mobile: string
+        }
+        Insert: {
+          college_name: string
+          contact_number: string
+          created_at?: string
+          enrollment_duration: string
+          id?: string
+          name: string
+          status?: string | null
+          student_id: string
+          university_email: string
+          zomato_mobile: string
+        }
+        Update: {
+          college_name?: string
+          contact_number?: string
+          created_at?: string
+          enrollment_duration?: string
+          id?: string
+          name?: string
+          status?: string | null
+          student_id?: string
+          university_email?: string
+          zomato_mobile?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
