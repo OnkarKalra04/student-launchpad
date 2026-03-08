@@ -112,6 +112,50 @@ export default function AdminDashboard() {
                         <span>Zomato: {s.zomato_mobile}</span>
                       </div>
                       <p className="text-[10px] text-muted-foreground mt-2">Applied: {new Date(s.created_at).toLocaleDateString()}</p>
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "verified" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "verified" }, {
+                              onSuccess: () => toast({ title: "Student verified" }),
+                              onError: () => toast({ title: "Failed to verify", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <CheckCircle2 className="w-3 h-3 mr-1" /> Verify
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "rejected" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "rejected" }, {
+                              onSuccess: () => toast({ title: "Student rejected" }),
+                              onError: () => toast({ title: "Failed to reject", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <XCircle className="w-3 h-3 mr-1" /> Reject
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 h-8 text-xs rounded-lg"
+                          disabled={s.status === "suspended" || updateStatus.isPending}
+                          onClick={() => {
+                            updateStatus.mutate({ id: s.id, status: "suspended" }, {
+                              onSuccess: () => toast({ title: "Student suspended" }),
+                              onError: () => toast({ title: "Failed to suspend", variant: "destructive" }),
+                            });
+                          }}
+                        >
+                          <Pause className="w-3 h-3 mr-1" /> Suspend
+                        </Button>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
