@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { useStudentApplications } from "@/hooks/use-student-applications";
+import { useStudentApplications, useUpdateStudentStatus } from "@/hooks/use-student-applications";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,9 @@ import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminDashboard() {
-  const { students, pilots, abTests, riskAlerts, verifyStudent, rejectStudent, suspendStudent, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
+  const { students, pilots, abTests, riskAlerts, updatePilot, togglePilot, resolveAlert, getMetrics } = useStore();
   const { data: supabaseStudents, isLoading: studentsLoading } = useStudentApplications();
+  const updateStatus = useUpdateStudentStatus();
   const { toast } = useToast();
   const metrics = getMetrics();
   const pilot = pilots[0];
