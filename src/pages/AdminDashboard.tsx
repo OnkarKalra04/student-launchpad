@@ -154,7 +154,7 @@ export default function AdminDashboard() {
                           onClick={() => {
                             updateStatus.mutate({ id: s.id, status: "suspended" }, {
                               onSuccess: () => toast({ title: "Student suspended" }),
-                              onError: () => toast({ title: "Failed to suspend", variant: "destructive" }),
+                              onError: (err) => toast({ title: "Failed to suspend", description: err.message, variant: "destructive" }),
                             });
                           }}
                         >
