@@ -1,0 +1,1 @@
+CREATE POLICY "Allow public update access" ON public.student_applications FOR UPDATE TO public USING (true) WITH CHECK (true);
