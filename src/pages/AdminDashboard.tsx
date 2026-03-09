@@ -285,11 +285,11 @@ export default function AdminDashboard() {
                 <div className="bg-card rounded-2xl p-6 border border-border space-y-3">
                   <h3 className="font-bold text-sm">Financial Summary</h3>
                   {[
-                    { label: "Total Revenue", value: `₹${metrics.totalRevenue.toLocaleString()}` },
-                    { label: "Total Burn", value: `₹${Math.round(metrics.totalBurn).toLocaleString()}` },
-                    { label: "Net Impact", value: `₹${Math.round(metrics.totalRevenue - metrics.totalBurn).toLocaleString()}` },
-                    { label: "Avg Order Value", value: `₹${Math.round(metrics.avgAOV)}` },
-                    { label: "Cost/Student", value: `₹${metrics.verified ? Math.round(metrics.totalBurn / metrics.verified) : 0}` },
+                    { label: "Total Students", value: `${totalStudents}` },
+                    { label: "Verified Students", value: `${verifiedStudents}` },
+                    { label: "Pending", value: `${(supabaseStudents ?? []).filter(s => s.status === "pending").length}` },
+                    { label: "Redemption Rate", value: `${redemptionRate}%` },
+                    { label: "Cost/Student", value: verifiedStudents > 0 ? `₹${Math.round(projectedBurn / verifiedStudents)}` : "₹0" },
                   ].map(item => (
                     <div key={item.label} className="flex justify-between py-2 border-b border-border last:border-0">
                       <span className="text-sm text-muted-foreground">{item.label}</span>
