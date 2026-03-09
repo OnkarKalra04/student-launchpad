@@ -6,10 +6,12 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 export async function updateStudentStatus(id: string, status: "verified" | "rejected" | "suspended") {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("student_applications")
     .update({ status })
-    .eq("id", id);
+    .eq("id", id)
+    .select();
   
   if (error) throw error;
+  return data;
 }
