@@ -125,8 +125,8 @@ export default function AdminDashboard() {
                           disabled={s.status === "verified" || updateStatus.isPending}
                           onClick={() => {
                             updateStatus.mutate({ id: s.id, status: "verified" }, {
-                              onSuccess: () => toast({ title: "Student verified" }),
-                              onError: () => toast({ title: "Failed to verify", variant: "destructive" }),
+                              onSuccess: () => toast({ title: "Student verified successfully" }),
+                              onError: (err) => toast({ title: "Failed to verify", description: err.message, variant: "destructive" }),
                             });
                           }}
                         >
