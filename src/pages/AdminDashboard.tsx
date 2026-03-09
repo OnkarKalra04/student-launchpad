@@ -140,7 +140,7 @@ export default function AdminDashboard() {
                           onClick={() => {
                             updateStatus.mutate({ id: s.id, status: "rejected" }, {
                               onSuccess: () => toast({ title: "Student rejected" }),
-                              onError: () => toast({ title: "Failed to reject", variant: "destructive" }),
+                              onError: (err) => toast({ title: "Failed to reject", description: err.message, variant: "destructive" }),
                             });
                           }}
                         >
