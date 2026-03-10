@@ -116,7 +116,7 @@ export default function AdminDashboard() {
                         <span>Contact: {s.contact_number}</span>
                         <span>Zomato: {s.zomato_mobile}</span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground mt-2">Applied: {new Date(s.created_at).toLocaleDateString()}</p>
+                      
                       <div className="flex gap-2 mt-3">
                         <Button
                           size="sm"
