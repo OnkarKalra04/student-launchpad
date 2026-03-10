@@ -13,6 +13,7 @@ import { Users, TrendingUp, ShieldAlert, CheckCircle2, XCircle, Pause, Download 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/AdminSidebar";
+import RiskAlertsSection from "@/components/RiskAlertsSection";
 
 export default function AdminDashboard() {
   const { pilots, abTests, riskAlerts, updatePilot, togglePilot, resolveAlert } = useStore();
@@ -116,7 +117,7 @@ export default function AdminDashboard() {
                         <span>Contact: {s.contact_number}</span>
                         <span>Zomato: {s.zomato_mobile}</span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground mt-2">Applied: {new Date(s.created_at).toLocaleDateString()}</p>
+                      
                       <div className="flex gap-2 mt-3">
                         <Button
                           size="sm"
@@ -338,28 +339,7 @@ export default function AdminDashboard() {
 
           {/* RISK */}
           {activeTab === "risk" && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-bold">Risk Alerts</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {riskAlerts.map(alert => (
-                  <motion.div key={alert.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`bg-card rounded-2xl p-5 border ${alert.resolved ? "border-border opacity-60" : "border-destructive/30"}`}>
-                    <div className="flex items-start gap-3">
-                      <ShieldAlert className={`w-4 h-4 mt-0.5 shrink-0 ${alert.resolved ? "text-muted-foreground" : "text-destructive"}`} />
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{alert.description}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{alert.studentName} · {new Date(alert.timestamp).toLocaleString()}</p>
-                        <Badge variant="outline" className="text-[10px] mt-1.5">{alert.type.replace("_", " ")}</Badge>
-                      </div>
-                    </div>
-                    {!alert.resolved && (
-                      <Button size="sm" variant="outline" onClick={() => { resolveAlert(alert.id); toast({ title: "Alert resolved" }); }} className="w-full mt-3 h-8 text-xs rounded-lg">
-                        Resolve
-                      </Button>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+            <RiskAlertsSection students={supabaseStudents ?? []} />
           )}
         </div>
       </div>
