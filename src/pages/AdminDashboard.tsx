@@ -13,6 +13,7 @@ import { Users, TrendingUp, ShieldAlert, CheckCircle2, XCircle, Pause, Download 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/AdminSidebar";
+import RiskAlertsSection from "@/components/RiskAlertsSection";
 
 export default function AdminDashboard() {
   const { pilots, abTests, riskAlerts, updatePilot, togglePilot, resolveAlert } = useStore();
